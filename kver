@@ -1,0 +1,76 @@
+#!/bin/bash
+# kver
+
+set -o pipefail
+set -o nounset
+
+
+# Defaults
+KUBECTL_VERSION=""
+PAGER=${PAGER:-less}
+MAC_VERSION=$(sysctl -n machdep.cpu.brand_string)
+
+
+# Help function
+function show_help() {
+cat > /dev/stdout << END
+${0} version
+   [-x <kubectx context> -n <kubens namespace]
+
+OPTIONAL ARGS:
+-x - kubectx context
+-n - kubens namespace
+
+EXAMPLES:
+    kver 1.22.9
+    kver 1.22.9 -x dev -n app kver - # switch to previous version, context, namespace
+
+END
+}
+
+
+# Override defaults with commandline flags + options/arguments
+while getopts "h?:x:n:-:" opt
+do
+    case $opt in
+        h|\?)
+            show_help
+            exit 0
+            ;;
+        x) KUBE_CTX=$OPTARG ;;
+        n) KUBE_NS=$OPTARG ;;
+    esac
+done
+shift "$((OPTIND-1))"
+
+
+# Check if args, if none show help.
+if [[ $# -eq 0 || -z $1 ]]
+then
+    show_help
+else
+    KUBECTL_VERSION=$1
+    if [[ ! -d ~/.kver ]]; then
+        mkdir ~/.kver
+        echo 'export PATH="~/.kver:$PATH"' >> ~/.bashrc
+    fi
+    
+    if [[ $MAC_VERSION == *"Apple"* ]]; then
+        CHIP="arm64"
+    elif [[ $MAC_VERSION == *"Intel"* ]]; then
+        CHIP="amd64"
+    fi
+
+    if [[ ! -f ~/.kver/kubectl$KUBECTL_VERSION ]]; then
+        curl https://storage.googleapis.com/kubernetes-release/release/v$KUBECTL_VERSION/bin/darwin/$CHIP/kubectl -o kubectl$KUBECTL_VERSION
+        chmod +x kubectl$KUBECTL_VERSION
+        mv kubectl$KUBECTL_VERSION ~/.kver
+    fi
+    
+    if [[ -f ~/.kver/k ]]; then
+        rm ~/.kver/k
+    fi
+    ln -s ~/.kver/kubectl$KUBECTL_VERSION ~/.kver/k
+    echo "kubectl switched to version $KUBECTL_VERSION"
+    exit 
+fi
