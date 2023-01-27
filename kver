@@ -86,7 +86,6 @@ then
 else
     TEST_1ST_ARG=$(echo $1 | grep -Eo '[0-9.]{1,4}' | tr -d '[:space:]')
     LEN_1ST_ARG=${#TEST_1ST_ARG}
-    echo $LEN_1ST_ARG
     if (( $LEN_1ST_ARG == 6 || $LEN_1ST_ARG == 7 )); then
         KUBECTL_VERSION=$1
         switch_version
