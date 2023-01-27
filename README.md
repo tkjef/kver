@@ -45,7 +45,7 @@ MIT License, (see [LICENSE][license])
 
 ## Project Roadmap
 
-Version 0.2.0
+Version 0.2.0  
     -add optional -x arg for switching to context  
     -add optional -n arg for switching to namespace  
     -add optional - flag for switching to previous kubectl version, context & namespace  
