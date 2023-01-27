@@ -72,5 +72,6 @@ else
     fi
     ln -s ~/.kver/kubectl$KUBECTL_VERSION ~/.kver/k
     echo "kubectl switched to version $KUBECTL_VERSION"
+    echo "use shortcut 'k', like 'k version' or 'k get po -A'"
     exit 
 fi
