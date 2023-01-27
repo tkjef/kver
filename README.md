@@ -8,6 +8,7 @@ kver Installation:
 unalias k
 mkdir ~/.kver
 echo 'export PATH="~/.kver:$PATH"' >> ~/.bashrc
+source ~/.bashrc
 curl https://raw.githubusercontent.com/tkjef/kver/master/kver -o ~/.kver/kver
 chmod +x ~/.kver/kver
 ```
