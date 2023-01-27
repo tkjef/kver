@@ -69,8 +69,8 @@ function switch_version() {
 
 
 # If no args, switch to matching server version.
-#   If no server show_help
-# If args download/switch to specified version, context & namespace.
+#   If no server exit
+# If args download/switch to specified version.
 if [[ $# -eq 0 || -z $1 ]]
 then
     SERVER_AVAILABLE=$(kubectl version --short | echo $?)
