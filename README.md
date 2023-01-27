@@ -1,7 +1,15 @@
 kver
 =======
 
-Switch between kubectl versions quickly and automatically based on context. Currently for mac only.  
+Switch between kubectl versions by specifying version or   
+automatically based on context.   
+Currently for mac only.   
+   
+Meant to replace your `alias k='kubectl'`.   
+If you have this alias set, you'll need to comment out or remove.   
+   
+kver will set the 'k' command to be soft-linked to the kubectl version to be used.   
+They are stored in your ~/.kver directory.   
 
 kver Installation:
 ```
@@ -15,19 +23,11 @@ chmod +x ~/.kver/kver
 
 Usage:
 ```
-$ kver <version> [-x <kubectx context> ] [-n <kubens namespace]   
-
-REQUIRED ARGS:
-$1 should be kubectl version
-
-OPTIONAL ARGS:
--x - kubectx context
--n - kubens namespace
+$ kver <version>
 
 EXAMPLES:
     kver 1.22.9
-    kver 1.22.9 -x dev -n app
-    kver - # switch to previous version, context, namespace
+    kver - # switch to previous version
 ```
 
 ## Author
@@ -48,6 +48,8 @@ MIT License, (see [LICENSE][license])
 ## Project Roadmap
 
 Version 0.2.0  
-    -add optional -x arg for switching to context  
-    -add optional -n arg for switching to namespace  
-    -add optional - flag for switching to previous kubectl version, context & namespace  
+    -add optional - flag for switching to previous kubectl version   
+    -more error checking   
+    
+Version 0.3.0   
+    -setup brew install    

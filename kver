@@ -14,42 +14,33 @@ MAC_VERSION=$(sysctl -n machdep.cpu.brand_string)
 # Help function
 function show_help() {
 cat > /dev/stdout << END
-${0} version
-   [-x <kubectx context> -n <kubens namespace]
+$ kver <version>
 
-OPTIONAL ARGS:
--x - kubectx context
--n - kubens namespace
-
-EXAMPLES:
+EXAMPLE:
     kver 1.22.9
-    kver 1.22.9 -x dev -n app kver - # switch to previous version, context, namespace
+    kver - # switch to previous version
 
 END
 }
 
 
-# Override defaults with commandline flags + options/arguments
-while getopts "h?:x:n:-:" opt
+# Add -h help option commandline flag
+while getopts "h?-:" opt
 do
     case $opt in
         h|\?)
             show_help
             exit 0
             ;;
-        x) KUBE_CTX=$OPTARG ;;
-        n) KUBE_NS=$OPTARG ;;
     esac
 done
 shift "$((OPTIND-1))"
 
 
-# Check if args, if none show help.
-if [[ $# -eq 0 || -z $1 ]]
-then
-    show_help
-else
-    KUBECTL_VERSION=$1
+
+# Common functions
+
+function switch_version() {
     if [[ ! -d ~/.kver ]]; then
         mkdir ~/.kver
         echo 'export PATH="~/.kver:$PATH"' >> ~/.bashrc
@@ -74,4 +65,33 @@ else
     echo "kubectl switched to version $KUBECTL_VERSION"
     echo "use shortcut 'k', like 'k version' or 'k get po -A'"
     exit 
+}
+
+
+# If no args, switch to matching server version.
+#   If no server show_help
+# If args download/switch to specified version, context & namespace.
+if [[ $# -eq 0 || -z $1 ]]
+then
+    SERVER_AVAILABLE=$(kubectl version --short | echo $?)
+    if [[ $SERVER_AVAILABLE -ne 0 ]]; then
+        echo "Kubernetes cluster is unavailable"
+        exit 1
+    else
+        KUBECTL_SERVER_VERSION=$(kubectl version --short|grep 'Server Version' | grep -Eo '[0-9.]{1,4}' | tr -d '[:space:]')
+        KUBECTL_VERSION=$KUBECTL_SERVER_VERSION
+        switch_version
+    fi
+# Else, if there's args.
+else
+    TEST_1ST_ARG=$(echo $1 | grep -Eo '[0-9.]{1,4}' | tr -d '[:space:]')
+    LEN_1ST_ARG=${#TEST_1ST_ARG}
+    echo $LEN_1ST_ARG
+    if (( $LEN_1ST_ARG == 6 || $LEN_1ST_ARG == 7 )); then
+        KUBECTL_VERSION=$1
+        switch_version
+    else
+        echo "Version ARG should be in format of 1.22.9"
+        exit 1
+    fi
 fi
