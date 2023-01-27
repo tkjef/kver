@@ -62,6 +62,7 @@ function switch_version() {
         rm ~/.kver/k
     fi
     ln -s ~/.kver/kubectl$KUBECTL_VERSION ~/.kver/k
+    ln -s ~/.kver/kubectl$KUBECTL_VERSION ~/.kver/kubectl
     echo "kubectl switched to version $KUBECTL_VERSION"
     echo "use shortcut 'k', like 'k version' or 'k get po -A'"
     exit 
