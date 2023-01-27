@@ -5,6 +5,7 @@ Switch between kubectl versions quickly and automatically based on context. Curr
 
 kver Installation:
 ```
+unalias k
 mkdir ~/.kver
 echo 'export PATH="~/.kver:$PATH"' >> ~/.bashrc
 curl https://raw.githubusercontent.com/tkjef/kver/master/kver -o ~/.kver/kver
