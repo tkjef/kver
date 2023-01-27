@@ -70,19 +70,19 @@ function switch_version() {
 
 # If no args, switch to matching server version.
 #   If no server exit
-# If args download/switch to specified version.
 if [[ $# -eq 0 || -z $1 ]]
 then
-    SERVER_AVAILABLE=$(kubectl version --short | echo $?)
-    if [[ $SERVER_AVAILABLE -ne 0 ]]; then
+    KUBECTL_SERVER_VERSION=$(kubectl version --short|grep 'Server Version' | grep -Eo '[0-9.]{1,4}' | tr -d '[:space:]')
+    LEN_KUBECTL_SERVER_VERSION=${#KUBECTL_SERVER_VERSION}
+    if [[ $LEN_KUBECTL_SERVER_VERSION -eq 0 ]]; then
         echo "Kubernetes cluster is unavailable"
         exit 1
     else
-        KUBECTL_SERVER_VERSION=$(kubectl version --short|grep 'Server Version' | grep -Eo '[0-9.]{1,4}' | tr -d '[:space:]')
         KUBECTL_VERSION=$KUBECTL_SERVER_VERSION
         switch_version
     fi
 # Else, if there's args.
+# Switch to specified version.
 else
     TEST_1ST_ARG=$(echo $1 | grep -Eo '[0-9.]{1,4}' | tr -d '[:space:]')
     LEN_1ST_ARG=${#TEST_1ST_ARG}
