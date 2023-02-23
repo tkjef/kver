@@ -61,6 +61,9 @@ function switch_version() {
     if [[ -f ~/.kver/k ]]; then
         rm ~/.kver/k
     fi
+    if [[ -f ~/.kver/kubectl ]]; then
+        rm ~/.kver/kubectl
+    fi
     ln -s ~/.kver/kubectl$KUBECTL_VERSION ~/.kver/k
     ln -s ~/.kver/kubectl$KUBECTL_VERSION ~/.kver/kubectl
     echo "kubectl switched to version $KUBECTL_VERSION"
